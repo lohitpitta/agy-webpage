@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigQuery Release Notes & Tweet Share</title>
+    
+    <!-- Google Fonts: Outfit and Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar or Header Panel -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+                <div>
+                    <h1>BigQuery</h1>
+                    <p class="subtitle">Release Notes Tracker</p>
+                </div>
+            </div>
+            
+            <div class="stats-panel">
+                <div class="stat-card">
+                    <span class="stat-label">Total Updates</span>
+                    <span class="stat-value" id="total-count">-</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Last Checked</span>
+                    <span class="stat-value" id="last-updated">Never</span>
+                </div>
+            </div>
+            
+            <div class="control-panel">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="search-input" placeholder="Search updates...">
+                </div>
+                
+                <div class="filter-box">
+                    <button class="filter-btn active" data-type="all">All</button>
+                    <button class="filter-btn" data-type="feature"><span class="badge feature"></span> Features</button>
+                    <button class="filter-btn" data-type="announcement"><span class="badge announcement"></span> Announcements</button>
+                    <button class="filter-btn" data-type="deprecation"><span class="badge deprecation"></span> Deprecations</button>
+                </div>
+                
+                <button id="refresh-btn" class="btn btn-primary">
+                    <span class="btn-text">Refresh Feed</span>
+                    <span class="spinner" id="refresh-spinner"><i class="fa-solid fa-spinner fa-spin"></i></span>
+                </button>
+            </div>
+            
+            <footer class="app-footer">
+                <p>Google Cloud BigQuery RSS Feed Tracker</p>
+                <p class="footer-note">Select any text or block in the update feed to instantly draft a Tweet.</p>
+            </footer>
+        </header>
+        
+        <!-- Main Feed Area -->
+        <main class="feed-container">
+            <div class="feed-header">
+                <h2>Timeline of Updates</h2>
+                <span class="feed-status" id="feed-status-msg">Loading latest releases...</span>
+            </div>
+            
+            <!-- Connection Error Warning -->
+            <div id="error-container" class="error-banner hidden">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <div class="error-details">
+                    <h4>Unable to fetch latest updates</h4>
+                    <p id="error-text">Check your network connection and try again.</p>
+                </div>
+                <button id="error-retry-btn" class="btn btn-secondary btn-sm">Retry</button>
+            </div>
+
+            <!-- Stale Data Warning -->
+            <div id="warning-container" class="warning-banner hidden">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span id="warning-text">Showing cached release notes.</span>
+            </div>
+            
+            <!-- Release Notes List -->
+            <div id="release-notes-feed" class="notes-feed">
+                <!-- Skeleton loader -->
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+        </main>
+        
+        <!-- Tweet Panel (Slide-out Drawer) -->
+        <div class="tweet-drawer" id="tweet-drawer">
+            <div class="drawer-header">
+                <h3><i class="fa-brands fa-x-twitter"></i> Draft Tweet</h3>
+                <button class="close-drawer" id="close-drawer-btn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="drawer-body">
+                <div class="selected-text-preview">
+                    <span class="preview-label">Selected Release Snippet</span>
+                    <blockquote id="selected-snippet-text">
+                        Select a passage from the release notes to begin drafting.
+                    </blockquote>
+                </div>
+                
+                <div class="tweet-editor-wrapper">
+                    <label for="tweet-textarea" class="editor-label">Edit Tweet text</label>
+                    <textarea id="tweet-textarea" placeholder="What's happening?"></textarea>
+                    
+                    <div class="tweet-meta-info">
+                        <div class="char-count-container">
+                            <svg class="progress-ring" width="24" height="24">
+                                <circle class="progress-ring__circle-bg" stroke="#333" stroke-width="2" fill="transparent" r="10" cx="12" cy="12" />
+                                <circle class="progress-ring__circle" stroke="#1d9bf0" stroke-width="2" fill="transparent" r="10" cx="12" cy="12" />
+                            </svg>
+                            <span id="char-count">280</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="drawer-actions">
+                    <button class="btn btn-secondary" id="copy-tweet-btn">
+                        <i class="fa-regular fa-copy"></i> Copy Text
+                    </button>
+                    <a href="#" target="_blank" class="btn btn-tweet" id="publish-tweet-btn">
+                        <i class="fa-brands fa-x-twitter"></i> Post on X
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
